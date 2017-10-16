@@ -3,12 +3,66 @@
     <div class="markdown-tools">
       <ul class="markdown-tools-left">
         <!--<li><i class="fa fa-header" aria-hidden="true" title="header"></i></li>-->
-        <li><i class="fa markdown-icon" aria-hidden="true" title="header 1" @click="handleText2Header(1)">H1</i></li>
-        <li><i class="fa markdown-icon" aria-hidden="true" title="header 2">H2</i></li>
-        <li><i class="fa markdown-icon" aria-hidden="true" title="header 3">H3</i></li>
-        <li><i class="fa markdown-icon" aria-hidden="true" title="header 4">H4</i></li>
-        <li><i class="fa markdown-icon" aria-hidden="true" title="header 5">H5</i></li>
-        <li><i class="fa markdown-icon" aria-hidden="true" title="header 6">H6</i></li>
+        <li>
+          <i
+            class="fa markdown-icon"
+            aria-hidden="true"
+            title="header 1"
+            @click="handleText2Header(1)"
+          >
+            H1
+          </i>
+        </li>
+        <li>
+          <i
+            class="fa markdown-icon"
+            aria-hidden="true"
+            title="header 2"
+            @click="handleText2Header(2)"
+          >
+            H2
+          </i>
+        </li>
+        <li>
+          <i
+            class="fa markdown-icon"
+            aria-hidden="true"
+            title="header 3"
+            @click="handleText2Header(3)"
+          >
+            H3
+          </i>
+        </li>
+        <li>
+          <i
+            class="fa markdown-icon"
+            aria-hidden="true"
+            title="header 4"
+            @click="handleText2Header(4)"
+          >
+            H4
+          </i>
+        </li>
+        <li>
+          <i
+            class="fa markdown-icon"
+            aria-hidden="true"
+            title="header 5"
+            @click="handleText2Header(5)"
+          >
+            H5
+          </i>
+        </li>
+        <li>
+          <i
+            class="fa markdown-icon"
+            aria-hidden="true"
+            title="header 6"
+            @click="handleText2Header(6)"
+          >
+            H6
+          </i>
+        </li>
         <li><i class="fa markdown-icon markdown-slide-line" aria-hidden="true">|</i></li>
         <li><i class="fa fa-bold" aria-hidden="true" title="bold" ></i></li>
         <li><i class="fa fa-italic" aria-hidden="true" title="italic" ></i></li>
@@ -51,6 +105,8 @@ import 'github-markdown-css';
 import 'highlight.js/styles/github.css';
 import 'font-awesome/css/font-awesome.min.css';
 import hljs from 'highlight.js';
+import { getCursorPosition, getSelectionText } from '@/utils/selection';
+import { stringReplace, getLineStringByPos } from '@/utils/string';
 
 
 export default {
@@ -68,6 +124,9 @@ export default {
     },
   },
   methods: {
+    /**
+     * init DOM
+     */
     initDomVars() {
       try {
         this.markdownTextDom = this.$refs.markdownText;
@@ -76,11 +135,16 @@ export default {
         console.error(e);
       }
     },
+    /**
+     * when inputing, change markdown to HTML and highlight code
+     */
     inputing() {
       this.setMarkdownHTML();
       this.highlightMarkdownHTML();
-      console.log(this.markdownTextDom.selectionStart);
     },
+    /**
+     * change markdown to HTML, set HTMl to DOM
+     */
     setMarkdownHTML() {
       try {
         this.markdownHTMLDom.innerHTML = this.markdownHTML;
@@ -88,6 +152,9 @@ export default {
         console.error(e);
       }
     },
+    /**
+     * highlight code
+     */
     highlightMarkdownHTML() {
       let codes = [];
       try {
@@ -100,8 +167,33 @@ export default {
           hljs.highlightBlock(i);
         });
     },
+    /**
+     * click the head icon, change text to markdown header
+     * @param headerNum
+     */
     handleText2Header(headerNum) {
-      console.log(this.markdownTextDom.selectionStart, headerNum);
+      const headerTitle = '#'.repeat(headerNum);
+      if (getSelectionText(this.markdownTextDom) !== '') {
+        // replace selection text to '# ...'
+        this.markdownText = stringReplace({
+          target: this.markdownText,
+          position: getCursorPosition(this.markdownTextDom),
+          searchValue: getSelectionText(this.markdownTextDom),
+          replaceValue: `${headerTitle} ${getSelectionText(this.markdownTextDom)}`,
+        });
+      } else {
+        // replace cursor line to '#...'
+        const searchInfo = getLineStringByPos({
+          target: this.markdownText,
+          position: getCursorPosition(this.markdownTextDom),
+        });
+        this.markdownText = stringReplace({
+          target: this.markdownText,
+          position: searchInfo.position,
+          searchValue: searchInfo.text,
+          replaceValue: `${headerTitle} ${searchInfo.text}`,
+        });
+      }
     },
   },
   mounted() {
