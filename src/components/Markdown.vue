@@ -3,81 +3,27 @@
     <div class="markdown-tools">
       <ul class="markdown-tools-left">
         <!--<li><i class="fa fa-header" aria-hidden="true" title="header"></i></li>-->
-        <li>
-          <i
-            class="fa markdown-icon"
-            aria-hidden="true"
-            title="header 1"
-            @click="handleText2Header(1)"
-          >
-            H1
-          </i>
-        </li>
-        <li>
-          <i
-            class="fa markdown-icon"
-            aria-hidden="true"
-            title="header 2"
-            @click="handleText2Header(2)"
-          >
-            H2
-          </i>
-        </li>
-        <li>
-          <i
-            class="fa markdown-icon"
-            aria-hidden="true"
-            title="header 3"
-            @click="handleText2Header(3)"
-          >
-            H3
-          </i>
-        </li>
-        <li>
-          <i
-            class="fa markdown-icon"
-            aria-hidden="true"
-            title="header 4"
-            @click="handleText2Header(4)"
-          >
-            H4
-          </i>
-        </li>
-        <li>
-          <i
-            class="fa markdown-icon"
-            aria-hidden="true"
-            title="header 5"
-            @click="handleText2Header(5)"
-          >
-            H5
-          </i>
-        </li>
-        <li>
-          <i
-            class="fa markdown-icon"
-            aria-hidden="true"
-            title="header 6"
-            @click="handleText2Header(6)"
-          >
-            H6
-          </i>
-        </li>
+        <li><i class="fa markdown-icon" aria-hidden="true" title="header 1" @click="handleText('# ')">H1</i></li>
+        <li><i class="fa markdown-icon" aria-hidden="true" title="header 2" @click="handleText('## ')">H2</i></li>
+        <li><i class="fa markdown-icon" aria-hidden="true" title="header 3" @click="handleText('### ')">H3</i></li>
+        <li><i class="fa markdown-icon" aria-hidden="true" title="header 4" @click="handleText('#### ')">H4</i></li>
+        <li><i class="fa markdown-icon" aria-hidden="true" title="header 5" @click="handleText('##### ')">H5</i></li>
+        <li><i class="fa markdown-icon" aria-hidden="true" title="header 6" @click="handleText('###### ')">H6</i></li>
         <li><i class="fa markdown-icon markdown-slide-line" aria-hidden="true">|</i></li>
-        <li><i class="fa fa-bold" aria-hidden="true" title="bold" ></i></li>
-        <li><i class="fa fa-italic" aria-hidden="true" title="italic" ></i></li>
-        <li><i class="fa fa-strikethrough" aria-hidden="true" title="strikethrough" ></i></li>
-        <li><i class="fa fa-list-ol" aria-hidden="true" title="ol list" ></i></li>
-        <li><i class="fa fa-list-ul" aria-hidden="true" title="ul list" ></i></li>
-        <li><i class="fa fa-quote-right" aria-hidden="true" title="quote" ></i></li>
+        <li><i class="fa fa-bold" aria-hidden="true" title="bold" @click="handleText('**', '**')"> </i></li>
+        <li><i class="fa fa-italic" aria-hidden="true" title="italic" @click="handleText('*', '*')"></i></li>
+        <li><i class="fa fa-strikethrough" aria-hidden="true" title="strikethrough" @click="handleText('~~', '~~')"></i></li>
+        <li><i class="fa fa-list-ol" aria-hidden="true" title="ol list" @click="handleText('1. ')"></i></li>
+        <li><i class="fa fa-list-ul" aria-hidden="true" title="ul list" @click="handleText('* ')"></i></li>
+        <li><i class="fa fa-quote-right" aria-hidden="true" title="quote" @click="handleText('> ')"></i></li>
         <li><i class="fa markdown-icon markdown-slide-line" aria-hidden="true">|</i></li>
-        <li><i class="fa fa-code" aria-hidden="true" title="code block" ></i></li>
-        <li><i class="fa fa-table" aria-hidden="true" title="table" ></i></li>
-        <li><i class="fa fa-picture-o" aria-hidden="true" title="upload picture" ></i></li>
-        <li><i class="fa fa-link" aria-hidden="true" title="link" ></i></li>
-        <li><i class="fa fa-minus" aria-hidden="true" title="halving line" ></i></li>
-        <li><i class="fa fa-clock-o" aria-hidden="true" title="current datetime" ></i></li>
-        <li><i class="fa fa-smile-o" aria-hidden="true" title="emoji" ></i></li>
+        <li><i class="fa fa-code" aria-hidden="true" title="code block" @click="handleText('```\n', '\n```')"></i></li>
+        <li><i class="fa fa-table" aria-hidden="true" title="table" @click="clickTableIcon"></i></li>
+        <li><i class="fa fa-picture-o" aria-hidden="true" title="picture" @click="handleText('', '![]()')"></i></li>
+        <li><i class="fa fa-link" aria-hidden="true" title="link" @click="handleText('', '[]()')"></i></li>
+        <li><i class="fa fa-minus" aria-hidden="true" title="halving line" @click="handleText('', '\n***')"></i></li>
+        <li><i class="fa fa-clock-o" aria-hidden="true" title="current datetime" @click="clickTimeIcon"></i></li>
+        <!-- <li><i class="fa fa-smile-o" aria-hidden="true" title="emoji" ></i></li> -->
       </ul>
       <ul class="markdown-tools-right">
         <li><i class="fa fa-eye-slash" aria-hidden="true" title="close preview"></i></li>
@@ -114,6 +60,9 @@ export default {
   data() {
     return {
       markdownText: '',
+      showPreview: true,
+      isPreview: false,
+      isFullScreen: false,
     };
   },
   computed: {
@@ -167,33 +116,53 @@ export default {
           hljs.highlightBlock(i);
         });
     },
+    clickTableIcon() {
+      const table = '|   |   |   |\n|---|---|---|\n|   |   |   |';
+      this.handleText('', table);
+    },
+    clickTimeIcon() {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      const second = date.getSeconds();
+      const dateTime = `${year}年${month}月${day}日 ${hour}时${minute}分${second}秒`;
+      this.handleText('', dateTime);
+    },
     /**
-     * click the head icon, change text to markdown header
-     * @param headerNum
+     * add markdown to text
+     * @param {string} prefix
+     * @param {string} suffix
      */
-    handleText2Header(headerNum) {
-      const headerTitle = '#'.repeat(headerNum);
+    handleText(prefix = '', suffix = '') {
       if (getSelectionText(this.markdownTextDom) !== '') {
-        // replace selection text to '# ...'
+        // replace selection text to 'replaceValue'
+        const searchValue = getSelectionText(this.markdownTextDom);
+        const replaceValue = `${prefix}${searchValue}${suffix}`;
         this.markdownText = stringReplace({
           target: this.markdownText,
           position: getCursorPosition(this.markdownTextDom),
-          searchValue: getSelectionText(this.markdownTextDom),
-          replaceValue: `${headerTitle} ${getSelectionText(this.markdownTextDom)}`,
+          searchValue,
+          replaceValue,
         });
       } else {
-        // replace cursor line to '#...'
+        // replace cursor line to 'replaceValue'
         const searchInfo = getLineStringByPos({
           target: this.markdownText,
           position: getCursorPosition(this.markdownTextDom),
         });
+        const searchValue = searchInfo.text;
+        const replaceValue = `${prefix}${searchValue}${suffix}`;
         this.markdownText = stringReplace({
           target: this.markdownText,
           position: searchInfo.position,
-          searchValue: searchInfo.text,
-          replaceValue: `${headerTitle} ${searchInfo.text}`,
+          searchValue,
+          replaceValue,
         });
       }
+      this.inputing();
     },
   },
   mounted() {
@@ -212,7 +181,6 @@ export default {
     -moz-border-radius: 4px;
     border-radius: 4px;
     overflow: hidden;
-    border-color: #000;
   }
   .markdown .markdown-icon {
     font-weight: bold;

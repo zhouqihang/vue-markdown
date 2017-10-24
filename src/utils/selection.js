@@ -21,7 +21,7 @@ export function getCursorPosition(target) {
  * @param {string} target
  * @param {number} pos
  */
-export function setcursorPosition(target, pos) {
+export function setCursorPosition(target, pos) {
   if (target.setSelectionRange) {
     target.focus();
     target.setSelectionRange(pos, pos);
