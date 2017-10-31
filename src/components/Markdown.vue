@@ -1,5 +1,5 @@
 <template>
-  <div id="markdown" class="markdown markdown-default">
+  <div id="markdown" class="markdown markdown-default" :class="{'markdown-fullscreen': isFullScreenModal}">
     <div class="markdown-tools">
       <ul class="markdown-tools-left">
         <!--<li><i class="fa fa-header" aria-hidden="true" title="header"></i></li>-->
@@ -26,13 +26,13 @@
         <!-- <li><i class="fa fa-smile-o" aria-hidden="true" title="emoji" ></i></li> -->
       </ul>
       <ul class="markdown-tools-right">
-        <li><i class="fa fa-eye-slash" aria-hidden="true" title="close preview"></i></li>
-        <li><i class="fa fa-desktop" aria-hidden="true" title="full screen preview"></i></li>
-        <li><i class="fa fa-arrows-alt" aria-hidden="true" title="full screen"></i></li>
+        <li><i class="fa fa-eye-slash" aria-hidden="true" title="close preview" @click="togglePreview('isShowPreview')"></i></li>
+        <li><i class="fa fa-desktop" aria-hidden="true" title="full screen preview" @click="togglePreview('isPreviewModal')"></i></li>
+        <li><i class="fa fa-arrows-alt" aria-hidden="true" title="full screen" @click="togglePreview('isFullScreenModal')"></i></li>
       </ul>
     </div>
     <div class="markdown-content">
-      <div class="markdown-edit">
+      <div class="markdown-edit" v-show="!isPreviewModal">
         <textarea
           class="markdown-edit-box"
           v-model="markdownText"
@@ -40,7 +40,7 @@
           @keyup="inputing">
         </textarea>
       </div>
-      <div class="markdown-preview markdown-body" ref="markdownHTML"></div>
+      <div class="markdown-preview markdown-body" ref="markdownHTML" v-show="isShowPreview"></div>
     </div>
   </div>
 </template>
@@ -57,12 +57,30 @@ import { stringReplace, getLineStringByPos } from '@/utils/string';
 
 export default {
   name: 'markdown',
+  props: {
+    showPreview: {
+      type: Boolean,
+      default: true,
+    },
+    markdown: {
+      type: String,
+      default: '',
+    },
+    isPreview: {
+      type: Boolean,
+      default: false,
+    },
+    isFullScreen: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
-      markdownText: '',
-      showPreview: true,
-      isPreview: false,
-      isFullScreen: false,
+      markdownText: this.markdown,
+      isShowPreview: this.showPreview,
+      isPreviewModal: this.isPreview,
+      isFullScreenModal: this.isFullScreen,
     };
   },
   computed: {
@@ -72,6 +90,7 @@ export default {
       },
     },
   },
+  // TODO add watcher to props
   methods: {
     /**
      * init DOM
@@ -80,6 +99,7 @@ export default {
       try {
         this.markdownTextDom = this.$refs.markdownText;
         this.markdownHTMLDom = this.$refs.markdownHTML;
+        this.inputing();
       } catch (e) {
         console.error(e);
       }
@@ -116,10 +136,16 @@ export default {
           hljs.highlightBlock(i);
         });
     },
+    /**
+     * insert table mark
+     */
     clickTableIcon() {
       const table = '|   |   |   |\n|---|---|---|\n|   |   |   |';
       this.handleText('', table);
     },
+    /**
+     * insert current datetime
+     */
     clickTimeIcon() {
       const date = new Date();
       const year = date.getFullYear();
@@ -164,6 +190,13 @@ export default {
       }
       this.inputing();
     },
+    /**
+     * set opposite value for key
+     * @param {string} k key
+     */
+    togglePreview(k) {
+      this[k] = !this[k];
+    },
   },
   mounted() {
     this.initDomVars();
@@ -181,6 +214,14 @@ export default {
     -moz-border-radius: 4px;
     border-radius: 4px;
     overflow: hidden;
+  }
+  .markdown.markdown-fullscreen {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    zIndex: 9999;
+    top: 0;
+    left: 0;
   }
   .markdown .markdown-icon {
     font-weight: bold;
