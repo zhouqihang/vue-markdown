@@ -37,10 +37,18 @@
           class="markdown-edit-box"
           v-model="markdownText"
           ref="markdownText"
-          @keyup="inputing">
+          @keyup="inputing"
+          @mouseover="onMouseOver"
+          @mouseout="onMouseOut">
         </textarea>
       </div>
-      <div class="markdown-preview markdown-body" ref="markdownHTML" v-show="isShowPreview"></div>
+      <div
+        class="markdown-preview markdown-body"
+        ref="markdownHTML"
+        v-show="isShowPreview"
+        @mouseover="onMouseOver(false)"
+        @mouseout="onMouseOut(false)">
+      </div>
     </div>
   </div>
 </template>
@@ -197,9 +205,59 @@ export default {
     togglePreview(k) {
       this[k] = !this[k];
     },
+    /**
+     * when markdown text scroll, scroll the preview container
+     */
+    onTextScroll() {
+      // get position of the textarea
+      const textScrollHeight = this.markdownTextDom.scrollHeight;
+      const textScrollTop = this.markdownTextDom.scrollTop;
+
+      // get position of the markdownHtml
+      const htmlScrollHeight = this.markdownHTMLDom.scrollHeight;
+      this.markdownHTMLDom.scrollTop = (textScrollTop / textScrollHeight) * htmlScrollHeight;
+    },
+    /**
+     * when preview container scroll, scroll the markdown text too
+     */
+    onContainerScroll() {
+      // get position of the textarea
+      const textScrollHeight = this.markdownTextDom.scrollHeight;
+
+      // get position of the markdownHtml
+      const htmlScrollHeight = this.markdownHTMLDom.scrollHeight;
+      const htmlScrollTop = this.markdownHTMLDom.scrollTop;
+      this.markdownTextDom.scrollTop = (htmlScrollTop / htmlScrollHeight) * textScrollHeight;
+    },
+    /**
+     * add scroll event
+     * @param {boolean} isMarkdown
+     */
+    onMouseOver(isMarkdown = true) {
+      if (isMarkdown) {
+        this.markdownTextDom.addEventListener('scroll', this.onTextScroll);
+      } else {
+        this.markdownHTMLDom.addEventListener('scroll', this.onContainerScroll);
+      }
+    },
+    /**
+     * remove scroll event
+     * @param {boolean} isMarkdown
+     */
+    onMouseOut(isMarkdown = true) {
+      if (isMarkdown) {
+        this.markdownTextDom.removeEventListener('scroll', this.onTextScroll);
+      } else {
+        this.markdownHTMLDom.removeEventListener('scroll', this.onContainerScroll);
+      }
+    },
   },
   mounted() {
     this.initDomVars();
+  },
+  beforeDestory() {
+    this.markdownTextDom.removeEventListener('scroll', this.onTextScroll);
+    this.markdownHTMLDom.removeEventListener('scroll', this.onContainerScroll);
   },
 };
 </script>
