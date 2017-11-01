@@ -26,8 +26,8 @@
         <!-- <li><i class="fa fa-smile-o" aria-hidden="true" title="emoji" ></i></li> -->
       </ul>
       <ul class="markdown-tools-right">
-        <li><i class="fa fa-eye-slash" aria-hidden="true" title="close preview" @click="togglePreview('isShowPreview')"></i></li>
-        <li><i class="fa fa-desktop" aria-hidden="true" title="full screen preview" @click="togglePreview('isPreviewModal')"></i></li>
+        <li><i class="fa fa-eye-slash" aria-hidden="true" title="close preview" @click="togglePreviewModal"></i></li>
+        <li><i class="fa fa-desktop" aria-hidden="true" title="full screen preview" @click="toggleFullScreenModal"></i></li>
         <li><i class="fa fa-arrows-alt" aria-hidden="true" title="full screen" @click="togglePreview('isFullScreenModal')"></i></li>
       </ul>
     </div>
@@ -204,6 +204,26 @@ export default {
      */
     togglePreview(k) {
       this[k] = !this[k];
+    },
+    /**
+     * toggle show textarea or not
+     */
+    togglePreviewModal() {
+      if (this.isPreviewModal) {
+        this.togglePreview('isPreviewModal');
+      } else {
+        this.togglePreview('isShowPreview');
+      }
+    },
+    /**
+     * toggle show preview area or not
+     */
+    toggleFullScreenModal() {
+      if (this.isShowPreview) {
+        this.togglePreview('isPreviewModal');
+      } else {
+        this.togglePreview('isShowPreview');
+      }
     },
     /**
      * when markdown text scroll, scroll the preview container
