@@ -70,10 +70,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    markdown: {
-      type: String,
-      default: '',
-    },
     isPreview: {
       type: Boolean,
       default: false,
@@ -82,10 +78,19 @@ export default {
       type: Boolean,
       default: false,
     },
+    value: {
+      type: Object,
+      default: () => (
+        {
+          markdown: '',
+          html: '',
+        }
+      ),
+    },
   },
   data() {
     return {
-      markdownText: this.markdown,
+      markdownText: this.value.markdown || '',
       isShowPreview: this.showPreview,
       isPreviewModal: this.isPreview,
       isFullScreenModal: this.isFullScreen,
@@ -125,6 +130,11 @@ export default {
     setMarkdownHTML() {
       try {
         this.markdownHTMLDom.innerHTML = this.markdownHTML;
+        // use input event to set value prop
+        this.$emit('input', {
+          markdown: this.markdownText,
+          html: this.markdownHTML,
+        });
       } catch (e) {
         console.error(e);
       }
