@@ -383,6 +383,7 @@ export default {
     flex: 1;
     padding: 15px;
     overflow: auto;
+    background-color: #fff;
   }
 
   /*github markdown css*/
