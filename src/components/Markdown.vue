@@ -1,6 +1,11 @@
 <template>
-  <div id="markdown" class="markdown markdown-default" :class="{'markdown-fullscreen': isFullScreenModal}">
-    <div class="markdown-tools">
+  <div
+    id="markdown"
+    class="markdown markdown-default"
+    :class="{'markdown-fullscreen': isFullScreenModal}"
+    :style="{borderColor}"
+  >
+    <div class="markdown-tools" :style="navStyle">
       <ul class="markdown-tools-left">
         <!--<li><i class="fa fa-header" aria-hidden="true" title="header"></i></li>-->
         <li><i class="fa markdown-icon" aria-hidden="true" title="header 1" @click="handleText('# ')">H1</i></li>
@@ -32,7 +37,7 @@
       </ul>
     </div>
     <div class="markdown-content">
-      <div class="markdown-edit" v-show="!isPreviewModal">
+      <div class="markdown-edit" v-show="!isPreviewModal" :style="{backgroundColor}">
         <textarea
           class="markdown-edit-box"
           v-model="markdownText"
@@ -66,18 +71,22 @@ import { stringReplace, getLineStringByPos } from '@/utils/string';
 export default {
   name: 'markdown',
   props: {
+    // show html preview area or not
     showPreview: {
       type: Boolean,
       default: true,
     },
+    // is preview modal
     isPreview: {
       type: Boolean,
       default: false,
     },
+    // is screen modal
     isFullScreen: {
       type: Boolean,
       default: false,
     },
+    // use 'v-model' to bind markdown text and html
     value: {
       type: Object,
       default: () => (
@@ -86,6 +95,21 @@ export default {
           html: '',
         }
       ),
+    },
+    // nav text color
+    navColor: {
+      type: String,
+      default: '',
+    },
+    // backgroundColor
+    backgroundColor: {
+      type: String,
+      default: '',
+    },
+    // border color
+    borderColor: {
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -97,13 +121,29 @@ export default {
     };
   },
   computed: {
+    // get html by markdown text
     markdownHTML: {
       get() {
         return marked(this.markdownText);
       },
     },
+    // get nav style
+    navStyle: {
+      get() {
+        const style = {};
+        if (this.navColor) {
+          style.color = this.navColor;
+        }
+        if (this.backgroundColor) {
+          style.backgroundColor = this.backgroundColor;
+        }
+        if (this.borderColor) {
+          style.borderColor = this.borderColor;
+        }
+        return style;
+      },
+    },
   },
-  // TODO add watcher to props
   methods: {
     /**
      * init DOM
@@ -324,9 +364,6 @@ export default {
     height: 40px;
     border-bottom: 1px solid #eeeff1;
     line-height: 40px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
