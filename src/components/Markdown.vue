@@ -64,12 +64,12 @@ import 'github-markdown-css';
 import 'highlight.js/styles/github.css';
 import 'font-awesome/css/font-awesome.min.css';
 import hljs from 'highlight.js';
-import { getCursorPosition, getSelectionText } from '@/utils/selection';
-import { stringReplace, getLineStringByPos } from '@/utils/string';
+import { getCursorPosition, getSelectionText } from '../utils/selection';
+import { stringReplace, getLineStringByPos } from '../utils/string';
 
 
 export default {
-  name: 'markdown',
+  name: 'VueEditorMarkdown',
   props: {
     // show html preview area or not
     showPreview: {

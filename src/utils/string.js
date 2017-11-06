@@ -27,7 +27,6 @@ export function getLineStringByPos({ target = '', position = 0 }) {
   startIndex = startIndex === -1 ? 0 : startIndex + 1;
   let endIndex = endString.indexOf('\n');
   endIndex = endIndex === -1 ? target.length : (startString.length + endIndex);
-  console.log(target, target.slice(startIndex, endIndex), endIndex);
   return {
     text: target.slice(startIndex, endIndex),
     position: startIndex,

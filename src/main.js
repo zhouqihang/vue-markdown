@@ -1,10 +1,11 @@
-import Vue from 'vue';
-import App from './App';
+import VueEditorMarkdown from './components/Markdown';
 
-Vue.config.productionTip = false;
+VueEditorMarkdown.install = Vue => {
+  Vue.component(VueEditorMarkdown.name, VueEditorMarkdown);
+};
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  render: h => h(App),
-});
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(VueEditorMarkdown);
+}
+
+export default VueEditorMarkdown;
