@@ -1,6 +1,6 @@
 {
   "name": "vue-editor-markdown",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "A markdown editor for vue",
   "author": "zhouqihang <console_log@126.com>",
   "private": false,
