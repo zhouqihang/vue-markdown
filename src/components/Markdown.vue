@@ -120,6 +120,15 @@ export default {
       isFullScreenModal: this.isFullScreen,
     };
   },
+  watch: {
+    // change markdownText when value prop changes
+    value: {
+      handler(val, oldVal) {
+        this.markdownText = this.value.markdown
+      },
+      deep: true
+    }
+  },
   computed: {
     // get html by markdown text
     markdownHTML: {
