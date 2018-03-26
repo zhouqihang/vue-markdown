@@ -60,7 +60,7 @@
 
 <script>
 import marked from 'marked';
-import 'github-markdown-css';
+import 'github-markdown-css/github-markdown.css';
 import 'highlight.js/styles/github.css';
 import 'font-awesome/css/font-awesome.min.css';
 import hljs from 'highlight.js';
@@ -122,12 +122,13 @@ export default {
   },
   watch: {
     // change markdownText when value prop changes
+    // two params can be get: val, oldVal
     value: {
-      handler(val, oldVal) {
-        this.markdownText = this.value.markdown
+      handler() {
+        this.markdownText = this.value.markdown;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {
     // get html by markdown text
